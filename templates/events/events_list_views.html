@@ -14,68 +14,38 @@
 
 <body>
 
-    <div class="container">
-        <h1>Event Recommender System</h1>
-        <hr>
-        <div class="row">
+    
+    <h1>Event Recommender System</h1>
+    <hr>
 
-            {% for event in events%}
+    {% extends "events/base_header_and_footer.html" %}
 
-                <div class="col-sm-6 col-md-6 col-lg-6">
-                    <div class="row">
-                        <div class="col-sm col-mg col-lg">
-                            <h2>{{event.e_name}}</h2>
-                            <img src="event.jpg" class="img-thumbnail" alt="">
-                        </div>
-                        <div class="col-sm col-mg col-lg">
-                            <p>{{event.e_description|truncatewords:50}}</p>
-                            <small><b>Location:</b> {{event.e_location}}</small><br>
-                            <button class="btn btn-outline-primary">View More</button>
-                        </div>
+    {% block content %}
 
-                    </div>
-                    <br><br>
-                </div>
+    <div class="row">
 
-                
-                <!-- <hr> -->
+        {% for event in events%}
 
-            {% endfor %}
-
-            <!-- <div class="col-sm col-md col-lg">
+            <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="row">
                     <div class="col-sm col-mg col-lg">
-                        <h2>{{something}}</h2>
+                        <h2>{{event.e_name}}</h2>
                         <img src="event.jpg" class="img-thumbnail" alt="">
                     </div>
                     <div class="col-sm col-mg col-lg">
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perferendis esse itaque adipisci quo alias provident, accusantium dolorem veniam magni qui nulla. Nihil ipsam magnam, voluptates eius quis tenetur necessitatibus expedita.</p>
-                        <small><b>Location:</b> Online</small><br>
+                        <p>{{event.e_description|truncatewords:50}}</p>
+                        <small><b>Location:</b> {{event.e_location}}</small><br>
                         <button class="btn btn-outline-primary">View More</button>
                     </div>
 
                 </div>
+                <br><br>
             </div>
-
-            <!-- for another event
-            <div class="col-sm col-md col-lg">
-                <div class="row">
-                    <div class="col-sm col-mg col-lg">
-                        <h2>{{something}}</h2>
-                        <img src="event.jpg" class="img-thumbnail" alt="">
-                    </div>
-                    <div class="col-sm col-mg col-lg">
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perferendis esse itaque adipisci quo alias provident, accusantium dolorem veniam magni qui nulla. Nihil ipsam magnam, voluptates eius quis tenetur necessitatibus expedita.</p>
-                        <small><b>Location:</b> Online</small><br>
-                        <button class="btn btn-outline-primary">View More</button>
-                    </div>
-
-                </div>
-            </div> -->
-
-
-        </div>
+        {% endfor %}
     </div>
+
+    {% endblock %}
+    
 
 
 

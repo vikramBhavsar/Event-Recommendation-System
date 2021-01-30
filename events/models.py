@@ -1,5 +1,13 @@
 from django.db import models
 
+class Event_category_model(models.Model):
+    e_category = models.CharField(max_length=60)
+
+    def __str__(self):
+        return str(self.id) + " " + self.e_category
+
+
+
 # Create your models here.
 class Events_model(models.Model):
     e_name = models.CharField(max_length=200)
@@ -7,6 +15,8 @@ class Events_model(models.Model):
     e_guest = models.CharField(max_length=100,blank=True,null=True)
     e_location = models.CharField(max_length=100,blank=True,null=True)
     e_time = models.DateTimeField(blank=True,null=True)
+    e_category = models.ManyToManyField(Event_category_model)
+
 
     def __str__(self):
         return str(self.id) + " " + self.e_name        
@@ -19,3 +29,5 @@ class Event_keywords_model(models.Model):
 
     def __str__(self):
         return str(self.id) + "\t" + self.e_keyword + "\t" + str(self.e_score)
+
+

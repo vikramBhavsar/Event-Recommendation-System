@@ -11,7 +11,6 @@
 #     e_time = models.DateTimeField(blank=True)
 
 import os
-# from event_recommender import settings
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE","event_recommender.settings")
 
@@ -19,10 +18,7 @@ import django
 
 django.setup()
 
-
 print("[+] Script Started..")
-
-
 
 from events.models import Events_model,Event_keywords_model
 import pandas as pd
