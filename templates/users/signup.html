@@ -1,0 +1,13 @@
+
+  {% extends "events/base_header_and_footer.html" %}
+
+
+  {% block content %}
+
+    <form action="{% url 'create_user' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+
+  {% endblock %}
