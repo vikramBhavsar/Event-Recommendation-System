@@ -6,8 +6,6 @@ class Event_category_model(models.Model):
     def __str__(self):
         return str(self.id) + " " + self.e_category
 
-
-
 # Create your models here.
 class Events_model(models.Model):
     e_name = models.CharField(max_length=200)

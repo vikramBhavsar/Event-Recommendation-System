@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <form action="{% url 'login_user' %}" method="POST">
+    <form action="{% url 'login_user' %}" id="login-form" method="POST">
         {% csrf_token %}
         <h1>Login</h1>
         <div class="form-group">
@@ -15,7 +15,7 @@
             <label for="exampleInputPassword1">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password">
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" name="submit-btn" class="btn btn-primary">Login</button>
     </form>
 
 {% endblock %}

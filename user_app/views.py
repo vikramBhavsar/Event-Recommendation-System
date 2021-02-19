@@ -47,7 +47,6 @@ def createUser(request):
     
     return render(request,'users/signup.html',{'form':form})
 
-
 def loginUser(request):
 
     if request.method == 'POST':

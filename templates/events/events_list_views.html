@@ -14,40 +14,93 @@
 
 <body>
 
+{% extends "events/base_header_and_footer.html" %}
+
+{% block content %}
+
+
+    <button type="button" onclick="testRecommendation({{user.id}})">Click me</button>
+
+    {% comment %} following code here should be a test to get recommendations {% endcomment %}
+
     
-    <h1>Event Recommender System</h1>
-    <hr>
+    {% comment %} above code here should be a test to get recommendations {% endcomment %}
 
-    {% extends "events/base_header_and_footer.html" %}
 
-    {% block content %}
+
+
 
     <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
 
-        {% for event in events%}
+          
+            <li class="mb-1">
+            <button class="btn d-inline-flex align-items-center rounded btn-info" data-bs-toggle="collapse" data-bs-target="#customize-collapse" aria-expanded="true">
+              Browse Categories
+            </button>
+            <br><br>
+            <div class="collapse show" id="customize-collapse" style="">
+              <ul class="list-unstyled fw-normal pb-1">
 
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <div class="row">
-                    <div class="col-sm col-mg col-lg">
-                        <h2>{{event.e_name}}</h2>
-                        <img src="event.jpg" class="img-thumbnail" alt="">
-                    </div>
-                    <div class="col-sm col-mg col-lg">
-                        <p>{{event.e_description|truncatewords:50}}</p>
-                        <small><b>Location:</b> {{event.e_location}}</small><br>
-                        <a href="{% url 'event_detail' event.pk %}" class="btn btn-outline-primary">View More</a>
-                    </div>
-
-                </div>
-                <br><br>
+                {% for cate in categories %}
+                    <li><a href="{% url 'event_list' category_pk=cate.pk %}" class="d-inline-flex align-items-center rounded">{{cate.e_category}}</a></li>
+                {% endfor %}
+                
+                    <hr>
+                  <li><a href="/docs/5.0/customize/optimize/" class="d-inline-flex align-items-center rounded">Trending</a></li>
+                  <li><a href="/docs/5.0/customize/optimize/" class="d-inline-flex align-items-center rounded">New</a></li>
+              </ul>
             </div>
-        {% endfor %}
-    </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-    {% endblock %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Events For You</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <button type="button" onclick="sendGetRequest()" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
+        </div>
+      </div>
+
+
+        <div class="row">
+
+                {% for event in events%}
+                    <div class="col-sm-4">
+                        <div class="card" style="width: 18rem;">
+                                <img src="download.jpg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ event.pk }} {{event.e_name}}</h5>
+                                    <p class="card-text">{{event.e_description|truncatewords:20}}</p>
+
+                                    {% if user.is_authenticated %}
+                                      <a href="{% url 'event_detail' event.pk %}" onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)" class="btn btn-primary">View more</a>
+                                    {% else %}
+                                      <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary">View more</a>
+                                    {% endif %}
+                                </div>
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+      
+      </div>
+    </main>
+  </div>
+
+{% endblock %}
     
-
-
 
     
 </body>
