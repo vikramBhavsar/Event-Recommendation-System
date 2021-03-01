@@ -13,6 +13,9 @@ class Event_User_log(models.Model):
     viewDate = models.IntegerField(default=0)
     viewLocation = models.IntegerField(default=0)
     viewRegistration = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.user) + " - " + str(self.event)
     
 
     ######## assigning id's for easier access ######
