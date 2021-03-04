@@ -44,7 +44,7 @@ function sendEvidenceToCollector(userid,eventid,evidenceType){
 
     xhttp.open('POST','/collector/put_evidence/',true);
     xhttp.setRequestHeader('X-CSRFToken',csrf_token);
-    xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhttp.setRequestHeader('Content-type','applica  tion/x-www-form-urlencoded');
     xhttp.send(`user=${userid}&eventid=${eventid}&evidenceType=${evidenceType}`);
 
 }
@@ -52,4 +52,16 @@ function sendEvidenceToCollector(userid,eventid,evidenceType){
 
 function testRecommendation(){
     
+}
+
+function sendHistoryToServerUsingGet(){
+    alert("From inside send history to server")
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function(){
+        alert(xhttp.responseText);
+    }
+
+    xhttp.open('GET','/recommender/index/',true);
+    // xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhttp.send();
 }

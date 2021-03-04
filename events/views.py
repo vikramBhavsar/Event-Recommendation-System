@@ -10,11 +10,31 @@ from django.views.generic.detail import DetailView
 
 # Create your views here.
 def index(request):
-    # context = {: }?
 
-    event_data = Events_model.objects.all()
-    context = {"events":event_data}
-    return render(request,"events/events_list_views.html",context)
+    data_obj = Event_category_model.objects.all()
+
+    count = 0
+
+    courousel_list = []
+    obj_list = []
+
+    for obj in data_obj:
+        obj_list.append(obj)
+        count += 1
+
+        if count == 3:
+            print(obj_list)
+            count = 0
+            courousel_list.append(obj_list)
+            obj_list = []
+        
+    print(courousel_list)
+    # for obj in data_obj:
+    #     obj_list.append(obj)
+
+    
+
+    return render(request,"events/temp.html",{"data_obj":courousel_list})
 
 class EventsListView(ListView):
 
@@ -92,11 +112,7 @@ class EventDetailView(DetailView):
         
         return context
 
-
-
-
-
-## other methods
+# other methods
 def get_recs_based_on_click_events(user):
     print("---custom code--")
     print(user)
@@ -112,10 +128,10 @@ def get_recs_based_on_click_events(user):
     # calculating score:
     for evidence in evidences:
         score = 0
-        print("[+] Investigation %s" % evidence)
+        # print("[+] Investigation %s" % evidence)
         if evidence.viewRegistration > 0:
             score += 100
-            print("Has Viewed Registration")
+            # print("Has Viewed Registration")
         
         # checking view date and location together. (very strong chance the user is intrested)
         if evidence.viewDate > 0 and evidence.viewLocation > 0:
@@ -126,7 +142,7 @@ def get_recs_based_on_click_events(user):
         if evidence.viewDetails > 0:
             score += 20
 
-        print("Final Score is - %s for %s" % (score,evidence))
+        # print("Final Score is - %s for %s" % (score,evidence))
 
 
 

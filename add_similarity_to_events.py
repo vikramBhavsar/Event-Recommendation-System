@@ -14,7 +14,7 @@ print("[+] Script Started..")
 
 # importing requried libraries
 import re, sqlite3,os
-import pandas as pd
+import pandas as pdr
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity

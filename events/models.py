@@ -23,7 +23,7 @@ class Events_model(models.Model):
 class Event_keywords_model(models.Model):
     e_keyword = models.CharField(max_length=50)
     e_score = models.FloatField()
-    e_event = models.ForeignKey(Events_model, on_delete=models.CASCADE)
+    e_event = models.ForeignKey(Events_model,related_name='event_keywords', on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.id) + "\t" + self.e_keyword + "\t" + str(self.e_score)
