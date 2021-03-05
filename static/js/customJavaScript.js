@@ -65,3 +65,27 @@ function sendHistoryToServerUsingGet(){
     // xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
     xhttp.send();
 }
+
+var myTimer
+function startCalls(){
+    alert("from inside of the function");
+    myTimer = setInterval(function() {
+        
+        var csrf_token = getCookie('csrftoken');
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            alert(this.response.body);
+        }
+    
+        xhttp.open('POST','/collector/put_evidence/',true);
+        xhttp.setRequestHeader('X-CSRFToken',csrf_token);
+        xhttp.setRequestHeader('Content-type','applica  tion/x-www-form-urlencoded');
+        xhttp.send(`user=${userid}`);
+
+      }, 5000);
+}
+
+
+function stopCalls(){
+    clearInterval(myTimer);
+}

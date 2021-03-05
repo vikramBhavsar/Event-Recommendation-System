@@ -1,116 +1,382 @@
-{% extends "events/base_header_and_footer.html" %}
-
-{% block content %}
-
-
+{% extends "events/base_header_and_footer.html" %} 
+{% block content %} 
 {% comment %} <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
+  </head>
 
-<!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <!-- CSS only -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+    crossorigin="anonymous"
+  />
 
-<!-- JavaScript Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  <!-- JavaScript Bundle with Popper -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+    crossorigin="anonymous"
+  ></script>
 
-<body> {% endcomment %}
+  <body>
+    {% endcomment %}
 
+    <button onclick="startCalls()">Click me</button>
+    <button onclick="myFunction()">Click me</button>
 
-
-
-
-    <button type="button" onclick="sendHistoryToServerUsingGet()">Click me</button>
-
+    <button onclick="stopCalls()">Stop timer</button>
 
     <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-      <div class="position-sticky pt-3">
-        <ul class="nav flex-column">
-
-          
+      <nav
+        id="sidebarMenu"
+        class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+      >
+        <div class="position-sticky pt-3">
+          <ul class="nav flex-column">
             <li class="mb-1">
-            <button class="btn d-inline-flex align-items-center rounded btn-info" data-bs-toggle="collapse" data-bs-target="#customize-collapse" aria-expanded="true">
-              Browse Categories
-            </button>
-            <br><br>
-            <div class="collapse show" id="customize-collapse" style="">
-              <ul class="list-unstyled fw-normal pb-1">
+              <button
+                class="btn d-inline-flex align-items-center rounded btn-info"
+                data-bs-toggle="collapse"
+                data-bs-target="#customize-collapse"
+                aria-expanded="true"
+              >
+                Browse Categories
+              </button>
+              <br /><br />
+              <div class="collapse show" id="customize-collapse" style="">
+                <ul class="list-unstyled fw-normal pb-1">
+                  {% for cate in categories %}
+                  <li>
+                    <a
+                      href="{% url 'event_list' category_pk=cate.pk %}"
+                      class="d-inline-flex align-items-center rounded"
+                      >{{cate.e_category}}</a
+                    >
+                  </li>
+                  {% endfor %}
 
-                {% for cate in categories %}
-                    <li><a href="{% url 'event_list' category_pk=cate.pk %}" class="d-inline-flex align-items-center rounded">{{cate.e_category}}</a></li>
-                {% endfor %}
-                
-                    <hr>
-                  <li><a href="/docs/5.0/customize/optimize/" class="d-inline-flex align-items-center rounded">Trending</a></li>
-                  <li><a href="/docs/5.0/customize/optimize/" class="d-inline-flex align-items-center rounded">New</a></li>
-              </ul>
-            </div>
+                  <hr />
+                  <li>
+                    <a
+                      href="/docs/5.0/customize/optimize/"
+                      class="d-inline-flex align-items-center rounded"
+                      >Trending</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="/docs/5.0/customize/optimize/"
+                      class="d-inline-flex align-items-center rounded"
+                      >New</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <!-- below code is for tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="home-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#home"
+              type="button"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+            >
+              TRENDING EVENTS
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+            >
+              PERSONALIZED
+            </button>
           </li>
         </ul>
-      </div>
-    </nav>
+        <!-- above code is for tabs -->
 
+        <div class="tab-content" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="home"
+            role="tabpanel"
+            aria-labelledby="home-tab"
+          >
+            <div
+              class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+            >
+              <h1 class="h2">TRENDING EVENTS</h1>
+            </div>
 
-
-    
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Events For You</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group me-2">
-            <button type="button" onclick="sendGetRequest()" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" onclick="sendHistoryToServerUsingGet()" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
-        </div>
-      </div>
-
-
-        <div class="row">
-
-                {% for event in events%}
-                    <div class="col-sm-4">
-                        <div class="card" style="width: 18rem;">
-                                <img src="download.jpg" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ event.pk }} {{event.e_name}}</h5>
-                                    <p class="card-text">{{event.e_description|truncatewords:20}}</p>
-
-                                    {% if user.is_authenticated %}
-                                      <a href="{% url 'event_detail' event.pk %}" onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)" class="btn btn-primary">View more</a>
-                                    {% else %}
-                                      <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary">View more</a>
-                                    {% endif %}
-                                </div>
+            <div class="container-fluid">
+              <div
+                id="carouselExampleIndicators"
+                class="carousel slide"
+                data-bs-ride="carousel"
+              >
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="row">
+                      {% comment %} Single card below start {% endcomment %}
+                      <div class="col-sm-4">
+                        <div class="card" style="width: 18rem">
+                          <img
+                            src="download.jpg"
+                            class="card-img-top"
+                            alt="..."
+                          />
+                          <div class="card-body">
+                            <h5 class="card-title">
+                              Special title treatment 1
+                            </h5>
+                            <p class="card-text">
+                              With supporting text below as a natural lead-in to
+                              additional content.
+                            </p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                          </div>
                         </div>
+                      </div>
+                      {% comment %} Single card below end {% endcomment %}
                     </div>
+                  </div>
+
+                  <div class="carousel-item">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="card" style="width: 18rem">
+                          <img
+                            src="download.jpg"
+                            class="card-img-top"
+                            alt="..."
+                          />
+                          <div class="card-body">
+                            <h5 class="card-title">Special title treatment</h5>
+                            <p class="card-text">
+                              With supporting text below as a natural lead-in to
+                              additional content.
+                            </p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  class="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide="prev"
+                >
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="false"
+                  ></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button
+                  class="carousel-control-next"
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="false"
+                  ></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+
+              <div class="row">
+                {% for event in events%}
+                <div class="col-sm-4">
+                  <div class="card" style="width: 18rem">
+                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        {{ event.pk }} {{event.e_name}}
+                      </h5>
+                      <p class="card-text">
+                        {{event.e_description|truncatewords:20}}
+                      </p>
+
+                      {% if user.is_authenticated %}
+                      <a
+                        href="{% url 'event_detail' event.pk %}"
+                        onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                        class="btn btn-primary"
+                        >View more</a
+                      >
+                      {% else %}
+                      <a
+                        href="{% url 'event_detail' event.pk %}"
+                        class="btn btn-primary"
+                        >View more</a
+                      >
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
                 {% endfor %}
+              </div>
+
+              <div class="row">
+                {% for event in events%}
+                <div class="col-sm-4">
+                  <div class="card" style="width: 18rem">
+                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        {{ event.pk }} {{event.e_name}}
+                      </h5>
+                      <p class="card-text">
+                        {{event.e_description|truncatewords:20}}
+                      </p>
+
+                      {% if user.is_authenticated %}
+                      <a
+                        href="{% url 'event_detail' event.pk %}"
+                        onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                        class="btn btn-primary"
+                        >View more</a
+                      >
+                      {% else %}
+                      <a
+                        href="{% url 'event_detail' event.pk %}"
+                        class="btn btn-primary"
+                        >View more</a
+                      >
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            id="profile"
+            role="tabpanel"
+            aria-labelledby="profile-tab"
+          >
+            <div
+              class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+            >
+              <h1 class="h2">PERSONALIZED EVENTS</h1>
+            </div>
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="card" style="width: 18rem">
+                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title">Special title treatment</h5>
+                      <p class="card-text">
+                        With supporting text below as a natural lead-in to
+                        additional content.
+                      </p>
+                      <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="card" style="width: 18rem">
+                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title">Special title treatment</h5>
+                      <p class="card-text">
+                        With supporting text below as a natural lead-in to
+                        additional content.
+                      </p>
+                      <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% comment %}
+          <div class="row">
+            {% for event in events%}
+            <div class="col-sm-4">
+              <div class="card" style="width: 18rem">
+                <img src="download.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                  <h5 class="card-title">{{ event.pk }} {{event.e_name}}</h5>
+                  <p class="card-text">
+                    {{event.e_description|truncatewords:20}}
+                  </p>
+
+                  {% if user.is_authenticated %}
+                  <a
+                    href="{% url 'event_detail' event.pk %}"
+                    onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                    class="btn btn-primary"
+                    >View more</a
+                  >
+                  {% else %}
+                  <a
+                    href="{% url 'event_detail' event.pk %}"
+                    class="btn btn-primary"
+                    >View more</a
+                  >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endcomment %}
         </div>
-      
       </div>
-    </main>
-  </div>
 
+      {% comment %} below is used by the extension to monitor which user is
+      logged in and which user is not {% endcomment %} 
+      {% if user.is_authenticated %}
+      <input
+        type="hidden"
+        id="user_id_hidden_field"
+        name="user_id_hidden_field"
+        value="{{user.id}}"
+        disabled
+      />
+      {% else %}
+      <input
+        type="hidden"
+        id="user_id_hidden_field"
+        name="user_id_hidden_field"
+        value="not_logged"
+        disabled
+      />
+      {% endif %} 
+    </div>
 
- {% comment %} below is used by the extension to monitor which user is logged in and which user is not {% endcomment %}
-{% if user.is_authenticated %}
-  <input type="hidden" id="user_id_hidden_field" name="user_id_hidden_field" value="{{user.id}}" disabled>
-{% else %}
-  <input type="hidden" id="user_id_hidden_field" name="user_id_hidden_field" value="not_logged" disabled>
-{% endif %}
-
-{% endblock %}
-
-
-
-
-    
-{% comment %} </body>
-</html> {% endcomment %}
+    {% endblock %}

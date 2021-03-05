@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.views import View
 from django.http import HttpResponse
 from django.http import JsonResponse
-
+from recommender.models import HistoryRecommendedEvents
 
 from events.models import Events_model,Event_keywords_model,Event_category_model
 
@@ -63,8 +63,8 @@ def getCosineBetHistoryAndEvents(sorted_keywords,keywords_dictionary,user_keywor
         
         #temporarily tracking the words that match
         words_list = []
-        print("\nEvent Word List %s" % event_keywords_set)
-        print("Word List for event %s %s is %s\n" % (event.pk,event.e_name,keyword_set))
+        # print("\nEvent Word List %s" % event_keywords_set)
+        # print("Word List for event %s %s is %s\n" % (event.pk,event.e_name,keyword_set))
         for keyw in keyword_set:
     #         print("(%s) %s  and %s" % (keyw,event_keywords[keyw],sorted_keywords[keyw]))
             
@@ -89,11 +89,44 @@ def getCosineBetHistoryAndEvents(sorted_keywords,keywords_dictionary,user_keywor
 
     # sorting the events in decreasing order
     sorted_tuples = sorted(recommendationForUser.items(), key=lambda item: item[1],reverse=True)
-    for item in sorted_tuples:
-        print(item)
+
+    return sorted_tuples
+    # incase to display the items, uncomment the below code
+    # for item in sorted_tuples:
+        # print(item)
+
+def putRecInDatabase(sorted_recs,user_id):
+    
+    # print("%s and its type %s" % (user_id,type(user_id)))
+    cu_user = User.objects.get(id=user_id)
+
+    if HistoryRecommendedEvents.objects.filter(user=cu_user).exists():
+        print("Data Already exists. Deleting")
+        to_delete = HistoryRecommendedEvents.objects.get(user=cu_user)
+        to_delete.delete()
+    else:
+        print("Does not exists")
+
+    recs = ""
+    print("here is individual events sorted.")
+    for eve in sorted_recs:
+        recs += str(eve[0]) + " "
+
+    print("<%s>" % recs[:-1])
+
+    # putting records into the database
+    reco = HistoryRecommendedEvents(user=cu_user,rec_events=recs)
+    reco.save()
+
+    print(reco.user)
+    print(reco.rec_events)
+    print(reco.latest_update)
+
+
 
 
 # Create your views here.
+# following method is used to put data into the database
 @csrf_exempt
 def index(request):
     print("-------custom code from inside of recommender------")
@@ -106,14 +139,15 @@ def index(request):
         print("this is from inside of the recommender function")
         jsonHistory = json.loads(request.body)
 
-
         records = []
 
         latestAccessTime = 1
 
+        user_id = ""
+
         for element in jsonHistory:
             if 'user_id' in element.keys():
-                pass
+                user_id = element["user_id"]
                 print("User_ID that was receieved was %s" % element["user_id"])
             elif 'title' in element.keys():
                 record = [element["title"],element["url"],element["time"]]
@@ -131,18 +165,24 @@ def index(request):
         sorted_keywords,keywords_dictionary, user_keywords_set, max_spread, min_spread = history_recommender.main_driver(records,latestAccessTime,stop_words)
 
         # calculating cosine similarity now.
-        getCosineBetHistoryAndEvents(sorted_keywords,keywords_dictionary, user_keywords_set, max_spread, min_spread)
+        sorted_recs = getCosineBetHistoryAndEvents(sorted_keywords,keywords_dictionary, user_keywords_set, max_spread, min_spread)
         
+        putRecInDatabase(sorted_recs,user_id)
         
 
-    return HttpResponse("Hello world from recommender")
+    return HttpResponse("Received Data from server")
 
 
-class HistoryRecommender(View):
-    def get(self,request):
+# this method is called again and again to check if new data is available to put into the database.
+
+def history_recommendations(request):
+
+    if request.method == 'POST':
+
+        
         pass
 
-    def post(self,request):
-        pass
 
-        
+
+
+
