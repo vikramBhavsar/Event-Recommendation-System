@@ -20,6 +20,8 @@ class HistoryRecommendedEvents(models.Model):
     rec_events = models.CharField(max_length=300)
     latest_update = models.DateField(default=date.today())
 
+    
+
     # def __str__(self):
     #     return user
 

@@ -26,9 +26,7 @@
   <body>
     {% endcomment %}
 
-    <button onclick="startCalls()">Click me</button>
-    <button onclick="myFunction()">Click me</button>
-
+    <button onclick="startCalls({{user.id}})">Click me</button>
     <button onclick="stopCalls()">Stop timer</button>
 
     <div class="row">
@@ -138,6 +136,7 @@
                 <div class="carousel-inner">
                   <div class="carousel-item active">
                     <div class="row">
+
                       {% comment %} Single card below start {% endcomment %}
                       <div class="col-sm-4">
                         <div class="card" style="width: 18rem">
@@ -159,6 +158,8 @@
                         </div>
                       </div>
                       {% comment %} Single card below end {% endcomment %}
+
+
                     </div>
                   </div>
 
@@ -292,7 +293,8 @@
             </div>
 
             <div class="container-fluid">
-              <div class="row">
+              <div class="row" id="personalized-div" >
+
                 <div class="col-sm-4">
                   <div class="card" style="width: 18rem">
                     <img src="download.jpg" class="card-img-top" alt="..." />
@@ -306,6 +308,8 @@
                     </div>
                   </div>
                 </div>
+
+
                 <div class="col-sm-4">
                   <div class="card" style="width: 18rem">
                     <img src="download.jpg" class="card-img-top" alt="..." />

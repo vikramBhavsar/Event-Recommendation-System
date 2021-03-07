@@ -44,7 +44,7 @@ function sendEvidenceToCollector(userid,eventid,evidenceType){
 
     xhttp.open('POST','/collector/put_evidence/',true);
     xhttp.setRequestHeader('X-CSRFToken',csrf_token);
-    xhttp.setRequestHeader('Content-type','applica  tion/x-www-form-urlencoded');
+    xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
     xhttp.send(`user=${userid}&eventid=${eventid}&evidenceType=${evidenceType}`);
 
 }
@@ -66,20 +66,71 @@ function sendHistoryToServerUsingGet(){
     xhttp.send();
 }
 
+function addContentToPage(content){
+    var mainDiv = document.getElementById("personalized-div");
+
+    var mainContent = "";
+
+
+    content.forEach(function(item,index){
+
+        console.log("from inside add content page:")
+
+        var eachNode = `<div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                        <h5 class="card-title">${item.id} ${item.name}</h5>
+                        <p class="card-text">${item.description}
+                        </p>
+                        <a href="/events/${item.id}/" onclick="sendEvidenceToCollector(${item.id},${item.user_id},4)" class="btn btn-primary">View More</a>
+                    </div>
+                    </div>
+                </div>`;
+
+        console.log(`${eachNode}`);
+
+        mainContent = mainContent.concat(eachNode);
+    });
+
+    console.log("Here is the main content")
+    console.log(mainContent)
+    mainDiv.innerHTML = mainContent;
+}
+
+
 var myTimer
-function startCalls(){
+function startCalls(userid){
     alert("from inside of the function");
     myTimer = setInterval(function() {
         
-        var csrf_token = getCookie('csrftoken');
+        // var csrf_token = getCookie('csrftoken');
         var xhttp = new XMLHttpRequest();
+        xhttp.responseText = 'json';
         xhttp.onreadystatechange = function(){
-            alert(this.response.body);
+
+            if(xhttp.readyState == 4 && xhttp.status == 200){
+                var content = JSON.parse(this.responseText);
+                
+                addContentToPage(content);
+
+                console.log("Times")
+                content.forEach(function(item,index){
+                    console.log(item)
+                });
+
+                stopCalls();
+                // alert(JSON.stringify(content));
+
+            }else if(xhttp.readyState == 4 && xhttp.status == 503){
+                console.log(JSON.parse(this.responseText));
+                console.log("Inside status code 503");  
+            }
         }
     
-        xhttp.open('POST','/collector/put_evidence/',true);
-        xhttp.setRequestHeader('X-CSRFToken',csrf_token);
-        xhttp.setRequestHeader('Content-type','applica  tion/x-www-form-urlencoded');
+        xhttp.open('POST','/recommender/history_recommendations/',true);
+        // xhttp.setRequestHeader('X-CSRFToken',csrf_token);
+        xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
         xhttp.send(`user=${userid}`);
 
       }, 5000);

@@ -7,14 +7,12 @@ from django.http import JsonResponse
 from recommender.models import HistoryRecommendedEvents
 
 from events.models import Events_model,Event_keywords_model,Event_category_model
-
+from datetime import date
 from django.views.decorators.csrf import csrf_exempt
 
 import json
 
 from HelperPack import help
-
-
 
 def getCosineBetHistoryAndEvents(sorted_keywords,keywords_dictionary,user_keywords_set,max_spread,min_spread):
 
@@ -122,17 +120,12 @@ def putRecInDatabase(sorted_recs,user_id):
     print(reco.rec_events)
     print(reco.latest_update)
 
-
-
-
 # Create your views here.
 # following method is used to put data into the database
 @csrf_exempt
 def index(request):
-    print("-------custom code from inside of recommender------")
-
     if request.method == 'GET':
-        print("this is from inside of get function")
+        pass
         
     elif request.method == 'POST':
         
@@ -174,13 +167,50 @@ def index(request):
 
 
 # this method is called again and again to check if new data is available to put into the database.
-
+@csrf_exempt
 def history_recommendations(request):
 
     if request.method == 'POST':
+        print("this is inside history recommendations functions")
+        print("%s" % request.POST["user"])
 
-        
-        pass
+        cu_user = User.objects.get(id=request.POST["user"])
+
+        recs = HistoryRecommendedEvents.objects.get(user=cu_user)
+
+        if recs.latest_update == date.today():
+            
+            eve_to_suggest = []
+            events = recs.rec_events.split(' ')
+
+            for eve in events:
+
+                if eve.isnumeric():
+
+                    cu_event = Events_model.objects.get(id=eve)
+
+                    temp = {}
+                    temp["user_id"] = request.POST["user"]
+                    temp["id"] = cu_event.pk
+                    temp["name"] = cu_event.e_name
+                    temp["description"] = cu_event.e_description
+                    temp["guest"] = cu_event.e_guest
+                    temp["location"] = cu_event.e_location
+                    temp["date"] = cu_event.e_time
+                    eve_to_suggest.append(temp)
+
+            return JsonResponse(eve_to_suggest,safe=False)
+
+        else:
+            return JsonResponse({"success":"failed"},safe=False,status=503)
+
+
+        # data = [{'name': 'Peter', 'email': 'peter@example.org'},
+        # {'name': 'Julia', 'email': 'julia@example.org'}]
+
+        # return JsonResponse(data,safe=False,status=503)
+
+
 
 
 
