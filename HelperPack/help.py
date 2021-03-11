@@ -77,7 +77,8 @@ class HistoryRecommendation():
 
             # submission
             for time_stamp in li:
-                spread += ((time_stamp - mean) ** 2)/math.log(latest_access_time-mean)
+                if (latest_access_time-mean) > 0:
+                    spread += ((time_stamp - mean) ** 2)/math.log(latest_access_time-mean)
                 
             if spread > 0:
             

@@ -49,7 +49,6 @@ function sendEvidenceToCollector(userid,eventid,evidenceType){
 
 }
 
-
 function testRecommendation(){
     
 }
@@ -98,6 +97,9 @@ function addContentToPage(content){
     mainDiv.innerHTML = mainContent;
 }
 
+function showAlert(){
+    alert("Dummy method to show alert");
+}
 
 var myTimer
 function startCalls(userid){
@@ -135,7 +137,6 @@ function startCalls(userid){
 
       }, 5000);
 }
-
 
 function stopCalls(){
     clearInterval(myTimer);

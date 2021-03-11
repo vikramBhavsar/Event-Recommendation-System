@@ -149,6 +149,7 @@ def index(request):
                 if element["time"] > latestAccessTime:
                     latestAccessTime = element["time"]
 
+
         # sending processed history to the helper class which contains
         # code that processes the history data
         stop_words = help.getStopWords()
@@ -164,7 +165,6 @@ def index(request):
         
 
     return HttpResponse("Received Data from server")
-
 
 # this method is called again and again to check if new data is available to put into the database.
 @csrf_exempt

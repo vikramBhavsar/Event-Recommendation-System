@@ -383,4 +383,10 @@
       {% endif %} 
     </div>
 
+    {% if user.is_authenticated %}
+      <script type="text/javascript">
+        startCalls({{user.id}});
+      </script>
+    {% endif %} 
+
     {% endblock %}

@@ -29,10 +29,6 @@ def index(request):
             obj_list = []
         
     print(courousel_list)
-    # for obj in data_obj:
-    #     obj_list.append(obj)
-
-    
 
     return render(request,"events/temp.html",{"data_obj":courousel_list})
 
@@ -58,6 +54,9 @@ class EventsListView(ListView):
             # checking if user has searched for any events
             if 'search_q' in self.request.GET:
                 search_term = self.request.GET["search_q"]
+                
+
+                print("Here is the search term: %s" % search_term)
                 
             else:
                 print("Normal search is taking place.")
