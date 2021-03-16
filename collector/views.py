@@ -7,6 +7,8 @@ from .models import Event_User_log
 from django.contrib.auth.models import User
 from events.models import Events_model
 
+from datetime import datetime
+
 
 # Create your views here.
 class CollectBrowsingData(View):
@@ -32,6 +34,8 @@ class CollectBrowsingData(View):
             event_log = Event_User_log.objects.get(user=log_user,event=log_event)
             print("[CC]\t Event and user intteraction exists")
 
+            event_log.timedetails = datetime.now()
+
             if evidenceType == 1:
                 print("[CC]\t User clicked on view registration")
                 event_log.viewRegistration = event_log.viewRegistration + 1
@@ -51,6 +55,8 @@ class CollectBrowsingData(View):
             print("[CC]\t Event and user intteraction doesnt exist")
             # will be executed when the user has interracted with the event for the first time.
             event_log = Event_User_log(user=log_user,event=log_event)
+
+            event_log.timedetails = datetime.now()
 
             if evidenceType == 1:
                 print("[CC]\t User clicked on view registration")

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Events_model, Event_keywords_model,Event_category_model
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from recommender.models import SimilarEvents
 from collector.models import Event_User_log
@@ -50,18 +51,21 @@ class EventsListView(ListView):
         else:
             print("\t\t\tNormal GET function")
             
-
             # checking if user has searched for any events
             if 'search_q' in self.request.GET:
                 search_term = self.request.GET["search_q"]
                 
-
+                
                 print("Here is the search term: %s" % search_term)
+
+                return Events_model.objects.filter(Q(e_name__contains=search_term)| Q(e_description__contains=search_term))
                 
             else:
                 print("Normal search is taking place.")
 
-            return super().get_queryset()
+                return super().get_queryset()
+
+               
     
 
     def get_context_data(self, **kwargs):
@@ -74,8 +78,8 @@ class EventsListView(ListView):
 
         if self.request.user.is_authenticated:
 
+            # print("user is authenticated")
             recommends = get_recs_based_on_click_events(self.request.user)
-            print("user is authenticated")
 
         return context
 
@@ -102,7 +106,6 @@ class EventDetailView(DetailView):
                 similar_events_id_int.append(int(sim_id))
         
         # similar_events = Events_model.objects.filter(pk__in=[similar_events_id_int[1:min(6,len(similar_events_id_int))]])   
-
         similar_events = Events_model.objects.filter(pk__in=similar_events_id_int[1:min(6,len(similar_events_id_int))])
 
         context = super().get_context_data(**kwargs)
@@ -111,17 +114,76 @@ class EventDetailView(DetailView):
         
         return context
 
-# other methods
+# this method takes event id and gets Top five events similar to it 
+def getTopFiveSimilarEvents(cur_even_pk):
+
+    # print("[+]\tINSIDE SIMILAR EVENTS")
+
+    similar_events_id = SimilarEvents.objects.get(pk=cur_even_pk)
+    similar_events_id = similar_events_id.similar_events.split(' ')
+
+    # converting values to integer
+    similar_events_id_int = []
+    for sim_id in similar_events_id:
+        if sim_id.isnumeric():
+            similar_events_id_int.append(int(sim_id))
+
+    return similar_events_id_int[1:min(6,len(similar_events_id_int))]
+
+# this function is called by "get_recs_based_on_click_events"
+# and it returns list of integer that is the key used for recommending events
+def get_recs_from_regis_and_not_regis(high_regis_event,high_not_regis_event):
+
+    recs_list = []
+    if high_regis_event is not None and high_not_regis_event is not None:
+        recs_list.append(high_not_regis_event)
+
+        similar_list = getTopFiveSimilarEvents(high_regis_event)
+        for eve in similar_list:
+            recs_list.append(eve)
+
+        similar_list = getTopFiveSimilarEvents(high_not_regis_event)
+        for eve in similar_list:
+            recs_list.append(eve)
+
+        print("Showing similar events for %s" % high_regis_event)
+        print("Final List which is generated for recommendation is %s" % recs_list)
+        print("\n\n")
+    elif high_regis_event is not None and high_not_regis_event is None:
+
+        # only putting similar events based on highest score that have been registered
+        similar_list = getTopFiveSimilarEvents(high_regis_event)
+        for eve in similar_list:
+            recs_list.append(eve)
+
+    elif high_regis_event is None and high_not_regis_event is not None:
+
+
+        # only putting similar events based on highest score that havent been registered
+        recs_list.append(high_not_regis_event)
+        similar_list = getTopFiveSimilarEvents(high_not_regis_event)
+        for eve in similar_list:
+            recs_list.append(eve)
+
+    # when both are null below option would be executed.
+    else:
+        print("\t\tInside Else tag where the  user has not intteracted with any events.")
+        pass
+
+    return recs_list
+
+# This method calculates scores of various evidence.
 def get_recs_based_on_click_events(user):
-    print("---custom code--")
-    print(user)
-    print(user.id)
-    print(type(user))
+
+    # print("---INSIDE THE GET RECS BASED ON CLICK METHOD--")
+    # print(user)
 
     cu_user = User.objects.get(pk=user.id)
 
     evidences = Event_User_log.objects.filter(user=cu_user)
-    # print(evidences)
+
+    # dictionary which stores the score and event id from below.
+    evidences_id = {}
 
 
     # calculating score:
@@ -141,12 +203,63 @@ def get_recs_based_on_click_events(user):
         if evidence.viewDetails > 0:
             score += 20
 
-        # print("Final Score is - %s for %s" % (score,evidence))
+        if score > 0:
+            evidences_id[evidence.event.id] = score
 
+        print("Final Score is - %s for %s" % (score,evidence))
+    
+    # sorting the dictionary based on values.
+    sorted_evidence = sorted(evidences_id.items(), key=lambda x: x[1],reverse=True)  
 
+    # print("Following is the sorted tuple %s " % sorted_evidence)
+    # print("Type is %s" % type(sorted_evidence))
 
+    # stands for highest scored events which are registered or not registered.
+    # this is used to store just the event ids.
+    high_not_regis_event = None
+    high_regis_event = None
+
+    # this is used to store database object
+    high_not_regis_event_obj = None
+    high_regis_event_obj = None
+
+    for evide in sorted_evidence:
+        cu_event = Events_model.objects.get(pk=evide[0])
         
+        cu_log = Event_User_log.objects.get(user=cu_user,event=cu_event)
+        if cu_log.viewRegistration == 0:
 
+            if high_not_regis_event is None:
+                high_not_regis_event = cu_event.id
+                high_not_regis_event_obj = cu_log
+
+            # Updating the variables if there's a recent entry
+            elif high_not_regis_event is not None and cu_log.timedetails > high_not_regis_event_obj.timedetails:
+                high_not_regis_event = cu_event.id
+                high_not_regis_event_obj = cu_log
+
+            # print("%s has not been registered" % cu_log)
+        else:
+
+            if high_regis_event is None:
+                high_regis_event = cu_event.id
+                high_regis_event_obj = cu_log
+
+            # Updating the variables if there's a recent entry
+            elif high_regis_event is not None and cu_log.timedetails > high_regis_event_obj.timedetails:
+                high_regis_event = cu_event.id
+                high_regis_event_obj = cu_log
+
+
+    print("Choosen (Not Registered): %s" % high_not_regis_event_obj)
+    print("Choosen (Registered): %s" % high_regis_event_obj)
+
+    print("Choosen ID (Not Registered): %s" % high_not_regis_event)
+    print("Choosen ID (Registered): %s" % high_regis_event)
+            # print("%s has been registered" % cu_log)
+    # print("%s and %s" % (high_not_regis_event,high_regis_event))
+
+    return get_recs_from_regis_and_not_regis(high_regis_event,high_not_regis_event)
 
     
     # for reference
@@ -158,5 +271,4 @@ def get_recs_based_on_click_events(user):
     
 
 
-    
     

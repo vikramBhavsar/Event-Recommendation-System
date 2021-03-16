@@ -54,7 +54,7 @@ function testRecommendation(){
 }
 
 function sendHistoryToServerUsingGet(){
-    alert("From inside send history to server")
+    console.log("From inside send history to server")
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function(){
         alert(xhttp.responseText);
@@ -73,21 +73,23 @@ function addContentToPage(content){
 
     content.forEach(function(item,index){
 
-        console.log("from inside add content page:")
+        console.log("from inside add content page:");
+        console.log("Type of decription is");
+        console.log(typeof item.description);
 
         var eachNode = `<div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                     <img src="download.jpg" class="card-img-top" alt="..." />
                     <div class="card-body">
                         <h5 class="card-title">${item.id} ${item.name}</h5>
-                        <p class="card-text">${item.description}
+                        <p class="card-text">${item.description.slice(0,20)}
                         </p>
                         <a href="/events/${item.id}/" onclick="sendEvidenceToCollector(${item.id},${item.user_id},4)" class="btn btn-primary">View More</a>
                     </div>
                     </div>
                 </div>`;
 
-        console.log(`${eachNode}`);
+        // console.log(`${eachNode}`);
 
         mainContent = mainContent.concat(eachNode);
     });
@@ -103,7 +105,7 @@ function showAlert(){
 
 var myTimer
 function startCalls(userid){
-    alert("from inside of the function");
+    console.log("Background call made for recommendations..");
     myTimer = setInterval(function() {
         
         // var csrf_token = getCookie('csrftoken');

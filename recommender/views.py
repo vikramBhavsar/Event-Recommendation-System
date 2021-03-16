@@ -18,13 +18,10 @@ def getCosineBetHistoryAndEvents(sorted_keywords,keywords_dictionary,user_keywor
 
     recommendationForUser = {}
 
-
-
     for event in Events_model.objects.all():
 
         keywords = []
         score = []
-
         
         for keywo in  event.event_keywords.all():
             keywords.append(keywo.e_keyword)
@@ -99,18 +96,19 @@ def putRecInDatabase(sorted_recs,user_id):
     cu_user = User.objects.get(id=user_id)
 
     if HistoryRecommendedEvents.objects.filter(user=cu_user).exists():
-        print("Data Already exists. Deleting")
+        # print("Data Already exists. Deleting")
         to_delete = HistoryRecommendedEvents.objects.get(user=cu_user)
         to_delete.delete()
     else:
-        print("Does not exists")
+        # print("Does not exists")
+        pass
 
     recs = ""
     print("here is individual events sorted.")
     for eve in sorted_recs:
         recs += str(eve[0]) + " "
 
-    print("<%s>" % recs[:-1])
+    # print("<%s>" % recs[:-1])
 
     # putting records into the database
     reco = HistoryRecommendedEvents(user=cu_user,rec_events=recs)
@@ -129,7 +127,7 @@ def index(request):
         
     elif request.method == 'POST':
         
-        print("this is from inside of the recommender function")
+        # print("this is from inside of the recommender function")
         jsonHistory = json.loads(request.body)
 
         records = []
@@ -141,7 +139,7 @@ def index(request):
         for element in jsonHistory:
             if 'user_id' in element.keys():
                 user_id = element["user_id"]
-                print("User_ID that was receieved was %s" % element["user_id"])
+                # print("User_ID that was receieved was %s" % element["user_id"])
             elif 'title' in element.keys():
                 record = [element["title"],element["url"],element["time"]]
                 records.append(record)
@@ -171,8 +169,7 @@ def index(request):
 def history_recommendations(request):
 
     if request.method == 'POST':
-        print("this is inside history recommendations functions")
-        print("%s" % request.POST["user"])
+        # print("%s" % request.POST["user"])
 
         cu_user = User.objects.get(id=request.POST["user"])
 
