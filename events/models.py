@@ -15,7 +15,6 @@ class Events_model(models.Model):
     e_time = models.DateTimeField(blank=True,null=True)
     e_category = models.ManyToManyField(Event_category_model)
 
-
     def __str__(self):
         return str(self.id) + " " + self.e_name        
 

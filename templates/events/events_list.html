@@ -1,7 +1,6 @@
 {% extends "events/base_header_and_footer.html" %} 
 {% block content %} 
 
-
     <div class="row">
       <nav
         id="sidebarMenu"
@@ -97,22 +96,55 @@
             <div
               class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
             >
-              <h1 class="h2">TRENDING EVENTS</h1>
+              
             </div>
 
-            {% if user_click_recommendations_active %}
-              <h3>Based on past viewed Events</h3>
-              <div
-                id="carouselExampleIndicators"
-                class="carousel slide"
-                data-bs-ride="carousel"
-              >
-                <div class="carousel-inner">
 
-                  <div class="carousel-item active">
-                    <div class="row">
-                    
-                    {% for eve in user_click_recommendations_active %}
+{% comment %} temporary code {% endcomment %}
+
+            <h1 class="h2">Based on your past browsing</h1>
+            {% if user_click_recommendations_active %}
+             <div
+                class="tab-pane fade show active"
+                id="pills-home"
+                role="tabpanel"
+                aria-labelledby="pills-home-tab"
+              >
+                <div class="wrapper">
+                  <div
+                    id="carouselExampleIndicators"
+                    class="carousel slide"
+                    data-bs-ride="carousel"
+                  >
+                    <div class="carousel-indicators">
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide-to="0"
+                        class="active"
+                        aria-current="true"
+                        aria-label="Slide 1"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide-to="1"
+                        aria-label="Slide 2"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide-to="2"
+                        aria-label="Slide 3"
+                      ></button>
+                    </div>
+
+
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <div class="row row-cols-0 row-cols-md-4 g-4">
+
+                        {% for eve in user_click_recommendations_active %}
                             {% comment %} Single card below start {% endcomment %}
                             <div class="col-sm-4">
                               <div class="card" style="width: 18rem">
@@ -128,82 +160,83 @@
                                 </div>
                               </div>
                             </div>
-
-                    {% endfor %}
-                      {% comment %} Single card below end {% endcomment %}
-                    </div>
-                  </div>
-                
-                  {% if user_click_recommendations %}
-                    {% for listy in user_click_recommendations %}
-                        <div class="carousel-item">
-                          <div class="row">
-
-                            {% for eve in listy%}
-                                {% comment %} Single card below start {% endcomment %}
-                                <div class="col-sm-4">
-                                  <div class="card" style="width: 18rem">
-                                    <img src="" class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                      <h5 class="card-title">
-                                        {{eve.e_name}}
-                                      </h5>
-                                      <p class="card-text">
-                                        {{eve.e_description|truncatewords:20}}
-                                      </p>
-                                      {% if user.is_authenticated %}
-                                          <a
-                                            href="{% url 'event_detail' eve.pk %}"
-                                            onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
-                                            class="btn btn-primary"
-                                            >View more</a
-                                          >
-                                      {% else %}
-                                          <a
-                                            href="{% url 'event_detail' eve.pk %}"
-                                            class="btn btn-primary"
-                                            >View more</a
-                                          >
-                                      {% endif %}
-                                    </div>
-                                  </div>
-                                </div>
-                                {% comment %} Single card below end {% endcomment %}
-                            {% endfor %}
-                            
-                          </div>
+                          {% endfor %}
                         </div>
-                    {% endfor %}
-                  {% endif %}
+                      </div>
+
+
+                    {% if user_click_recommendations %}
+                        {% for listy in user_click_recommendations %}
+                            <div class="carousel-item">
+                              <div class="row">
+
+                                {% for eve in listy%}
+                                    {% comment %} Single card below start {% endcomment %}
+                                    <div class="col-sm-4">
+                                      <div class="card" style="width: 18rem">
+                                        <img src="" class="card-img-top" alt="..." />
+                                        <div class="card-body">
+                                          <h5 class="card-title">
+                                            {{eve.e_name}}
+                                          </h5>
+                                          <p class="card-text">
+                                            {{eve.e_description|truncatewords:20}}
+                                          </p>
+                                          {% if user.is_authenticated %}
+                                              <a
+                                                href="{% url 'event_detail' eve.pk %}"
+                                                onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                                                class="btn btn-primary"
+                                                >View more</a
+                                              >
+                                          {% else %}
+                                              <a
+                                                href="{% url 'event_detail' eve.pk %}"
+                                                class="btn btn-primary"
+                                                >View more</a
+                                              >
+                                          {% endif %}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {% comment %} Single card below end {% endcomment %}
+                                {% endfor %}
+                                
+                              </div>
+                            </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                    
+                    <button
+                      class="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#carouselExampleIndicators"
+                      data-bs-slide="prev"
+                    >
+                      <span
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      class="carousel-control-next"
+                      type="button"
+                      data-bs-target="#carouselExampleIndicators"
+                      data-bs-slide="next"
+                    >
+                      <span
+                        class="carousel-control-next-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
                 </div>
-              
-                <button
-                  class="carousel-control-prev"
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide="prev"
-                >
-                  <span
-                    class="carousel-control-prev-icon"
-                    aria-hidden="false"
-                  ></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button
-                  class="carousel-control-next"
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide="next"
-                >
-                  <span
-                    class="carousel-control-next-icon"
-                    aria-hidden="false"
-                  ></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
               </div>
-              <br><br>
             {% endif %}
+
 
             {% if user_browse_recommendations_active %}
               <h3>Based on your past Search</h3>
@@ -309,6 +342,8 @@
               </div>
               <br><br>
             {% endif %}
+
+
 
             <div class="container-fluid">
               
@@ -426,10 +461,7 @@
       {% endif %}
     </div>
 
-    {% if user.is_authenticated %}
-    <script type="text/javascript">
-      startCalls({{user.id}});
-    </script>
-    {% endif %} {% endblock %}
-  </body>
-</html>
+    {% comment %} <script src="js/script.js" type="text/javascript"></script> {% endcomment %}
+    
+
+{% endblock %}

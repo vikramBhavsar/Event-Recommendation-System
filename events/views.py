@@ -44,11 +44,11 @@ def get_courousel_list_for_objects(data_obj):
     obj_list = []
 
     for obj in data_obj:
-        if proper_count >= 3:
+        if proper_count >= 4:
             obj_list.append(obj)
             count += 1
 
-            if count == 3:
+            if count == 4:
                 print(obj_list)
                 count = 0
                 courousel_list.append(obj_list)
@@ -64,12 +64,14 @@ def get_courousel_list_for_objects(data_obj):
         
     return courousel_list_active,courousel_list
 
-
+def getHomePage(request):
+    return render(request,"events/main_page.html",{})
 
 class EventsListView(ListView):
 
     model = Events_model
-    template_name = 'events/events_list_views.html'
+    template_name = 'events/events_list.html'
+    # template_name = 'static_html/demo.html'
     context_object_name = "events"
 
     def get(self, request, *args, **kwargs):

@@ -16,10 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+from events.views import getHomePage
+
 urlpatterns = [
     path('events/',include('events.urls')),
     path('user/',include('user_app.urls')),
     path('collector/',include('collector.urls')),
     path('recommender/',include('recommender.urls')),
     path('admin/', admin.site.urls),
+    path('',getHomePage,name="home_page"),
 ]
