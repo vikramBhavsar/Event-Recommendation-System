@@ -46,6 +46,8 @@
   
     <div class="signup-form">
       <form action="{% url 'create_user' %}" method="POST">
+        {% csrf_token %}
+
         <h2>Sign Up</h2>
         <p>Please fill in this form to create an account!</p>
         <hr />
@@ -55,7 +57,7 @@
               <input
                 type="text"
                 class="form-control"
-                name="first_name"
+                name="firstname"
                 placeholder="First Name"
                 required="required"
               />
@@ -69,7 +71,7 @@
               <input
                 type="text"
                 class="form-control"
-                name="first_name"
+                name="lastname"
                 placeholder="Last Name"
                 required="required"
               />
@@ -89,19 +91,18 @@
 
         <div class="form-group">
           <input
-            type="tel"
+            type="text"
             class="form-control"
-            name="mobile"
+            name="mobile_number"
             placeholder="Mobile number"
-            required="required"
           />
         </div>
 
-        <div class="form-group">
+        {% comment %} <div class="form-group">
           <label>Choose Gender</label>
-        </div>
+        </div> {% endcomment %}
 
-        <div class="form-group">
+        {% comment %} <div class="form-group">
           <div class="form-check">
             <input
               class="form-check-input"
@@ -125,9 +126,9 @@
               Female
             </label>
           </div>
-        </div>
+        </div> {% endcomment %}
 
-        <div class="form-group">
+        {% comment %} <div class="form-group">
           <input
             type="text"
             class="form-control"
@@ -135,7 +136,7 @@
             placeholder="Username"
             required="required"
           />
-        </div>
+        </div> {% endcomment %}
         <div class="form-group">
           <input
             type="password"

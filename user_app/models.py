@@ -7,10 +7,11 @@ from datetime import datetime
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    age = models.IntegerField()
+    age = models.IntegerField(null=True,blank=True)
     category = models.ManyToManyField(Event_category_model)
     history_enabled = models.BooleanField(default=False)
     birth_date = models.DateField(null=True,blank=True)
+    phone_number = models.CharField(max_length=12,null=True,blank=True,default='')
 
 
 class UserSearch(models.Model):

@@ -13,6 +13,9 @@ def createUser(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         print("Inside the post request")
+
+        print(form)
+
         if form.is_valid():
 
             # getting information from the form.
@@ -20,8 +23,9 @@ def createUser(request):
             lastname = form.cleaned_data["lastname"]
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
-            age = form.cleaned_data["age"]
-            birth_date = form.cleaned_data["birth_date"]
+            phone_number = form.cleaned_data["phone_number"]
+            # age = form.cleaned_data["age"]
+            # birth_date = form.cleaned_data["birth_date"]
 
 
             # creating the user model
@@ -32,15 +36,16 @@ def createUser(request):
             cu_user.save()
 
             # saving other details about the user.
-            user_profile = UserProfile(user=cu_user,age=age,birth_date=birth_date)
+            user_profile = UserProfile(user=cu_user,phone_number=phone_number)
             user_profile.save()
-
-
-
 
             print("-------CUSTOM PRINT STATEMENT--------")
             print("Data has been inserted into the database")
 
+            return redirect('login_user',{})
+        
+        else:
+            print("form is invalid")
 
     else:
         form = UserForm
