@@ -26,12 +26,12 @@ def index(request):
         count += 1
 
         if count == 3:
-            print(obj_list)
+            # print(obj_list)
             count = 0
             courousel_list.append(obj_list)
             obj_list = []
         
-    print(courousel_list)
+    # print(courousel_list)
 
     return render(request,"events/temp.html",{"data_obj":courousel_list})
 
@@ -81,7 +81,7 @@ class EventsListView(ListView):
     def get_queryset(self): 
         if 'category_pk' in self.kwargs:
             category_pk = self.kwargs["category_pk"]
-            return Events_model.objects.filter(e_category=Event_category_model.objects.get(pk=category_pk))
+            return Events_model.objects.filter(e_category=Event_category_model.objects.get(pk=category_pk)).order_by("-e_regis_count")
             
         else:
             print("\t\t\tNormal GET function")
@@ -102,8 +102,8 @@ class EventsListView(ListView):
                 return Events_model.objects.filter(Q(e_name__contains=search_term)| Q(e_description__contains=search_term))
                 
             else:
-                print("Normal search is taking place.")
 
+                print("Normal search is taking place.")
                 return super().get_queryset()
 
     def get_context_data(self, **kwargs):
@@ -114,51 +114,66 @@ class EventsListView(ListView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Event_category_model.objects.all()
 
-        if self.request.user.is_authenticated:
-
-            # print("user is authenticated")
-            # following is a list (getting rec based on event clicks)
-            user_clicks_recommends = get_recs_based_on_click_events(self.request.user)
-            user_clicks_recommends = Events_model.objects.filter(pk__in=user_clicks_recommends)
-
+        print("----CUSTOM CODE----")
+        print("%s" % kwargs)
+        # not giving trending events if not required:
+        if 'category_pk' not in self.kwargs:
+            for cat in Event_category_model.objects.all():
+                context[str(cat.e_category).replace(" ","_").replace("&","and").replace(",","")] = Events_model.objects.filter(e_category=cat).order_by("-e_regis_count")
             
-            # getting results based on past search history
-            cu_user = User.objects.get(pk=self.request.user.id)
-            # following is a queryset 
-            user_browse_recommends = UserSearch.objects.filter(user=cu_user).order_by("-time_details")
-            user_browse_recommendation_list = []
 
-            # to get only last two searches
-            search_count = 0
-            for user_search in user_browse_recommends:
-                search_count += 1
+        # only showing the results if its not a search request
+        if 'search_q' not in self.request.GET:
+
+            if self.request.user.is_authenticated:
+
+                # print("user is authenticated")
+                # following is a list (getting rec based on event clicks)
+                user_clicks_recommends = get_recs_based_on_click_events(self.request.user)
+                user_clicks_recommends = Events_model.objects.filter(pk__in=user_clicks_recommends)
+
                 
-                # taking only last two search count to show.
-                if search_count >= 3:
-                    break
+                # getting results based on past search history
+                cu_user = User.objects.get(pk=self.request.user.id)
+                # following is a queryset 
+                user_browse_recommends = UserSearch.objects.filter(user=cu_user).order_by("-time_details")
+                user_browse_recommendation_list = []
 
-                search_events = Events_model.objects.filter(Q(e_name__contains=user_search.search_term)| Q(e_description__contains=user_search.search_term))
+                # to get only last two searches
+                search_count = 0
+                for user_search in user_browse_recommends:
+                    search_count += 1
+                    
+                    # taking only last two search count to show.
+                    if search_count >= 3:
+                        break
 
-                for srch_event in search_events:
-                    user_browse_recommendation_list.append(srch_event)
+                    search_events = Events_model.objects.filter(Q(e_name__contains=user_search.search_term)| Q(e_description__contains=user_search.search_term))
 
-            # adding the data recieved to the conttext
-            click_recs_carousal_active,click_recs_carousal = get_courousel_list_for_objects(user_clicks_recommends)
-            browse_recs_carousal_active,browse_recs_carousal = get_courousel_list_for_objects(user_browse_recommendation_list)
+                    for srch_event in search_events:
+                        user_browse_recommendation_list.append(srch_event)
 
-            context["user_click_recommendations_active"] = click_recs_carousal_active
-            context["user_click_recommendations"] = click_recs_carousal
-            context["user_browse_recommendations_active"] =browse_recs_carousal_active
-            context["user_browse_recommendations"] = browse_recs_carousal
-            print("------CUSTOM CODE ----")
-            print("\n%s\n\n%s"% (click_recs_carousal_active,click_recs_carousal))
+                # adding the data recieved to the conttext
+                click_recs_carousal_active,click_recs_carousal = get_courousel_list_for_objects(user_clicks_recommends)
+                browse_recs_carousal_active,browse_recs_carousal = get_courousel_list_for_objects(user_browse_recommendation_list)
+
+                context["user_click_recommendations_active"] = click_recs_carousal_active
+                context["user_click_recommendations"] = click_recs_carousal
+                context["user_browse_recommendations_active"] =browse_recs_carousal_active
+                context["user_browse_recommendations"] = browse_recs_carousal
+                # print("------CUSTOM CODE ----")
+                # print("\n%s\n\n%s"% (click_recs_carousal_active,click_recs_carousal))
+
+        # print("Custome code-----")
+        # for eve_key in context.keys():
+        #     print("\n\n%s\n\n%s\n\n"% (eve_key,context[eve_key]))
         
         return context
 
 class EventDetailView(DetailView):
     model = Events_model
 
-    template_name = 'events/events_detail_views.html'
+    template_name = 'events/events_details.html'
 
     context_object_name = "event"
 
@@ -182,7 +197,7 @@ class EventDetailView(DetailView):
 
         context = super().get_context_data(**kwargs)
         context['similar_events'] = similar_events
-        print(context)
+        # print(context)
         
         return context
 
@@ -218,9 +233,9 @@ def get_recs_from_regis_and_not_regis(high_regis_event,high_not_regis_event):
         for eve in similar_list:
             recs_list.append(eve)
 
-        print("Showing similar events for %s" % high_regis_event)
-        print("Final List which is generated for recommendation is %s" % recs_list)
-        print("\n\n")
+        # print("Showing similar events for %s" % high_regis_event)
+        # print("Final List which is generated for recommendation is %s" % recs_list)
+        # print("\n\n")
     elif high_regis_event is not None and high_not_regis_event is None:
 
         # only putting similar events based on highest score that have been registered

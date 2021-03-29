@@ -28,6 +28,8 @@ class CollectBrowsingData(View):
 
         log_user = User.objects.get(pk=userid)
         log_event = Events_model.objects.get(pk=eventid)
+        log_event.e_regis_count += 1
+        log_event.save()
 
         try:
             # will be executed if data is already present in the database

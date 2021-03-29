@@ -100,10 +100,9 @@
             </div>
 
 
-{% comment %} temporary code {% endcomment %}
 
-            <h1 class="h2">Based on your past browsing</h1>
             {% if user_click_recommendations_active %}
+            <h2 class="h2">Based on your past browsing</h2>
              <div
                 class="tab-pane fade show active"
                 id="pills-home"
@@ -146,7 +145,7 @@
 
                         {% for eve in user_click_recommendations_active %}
                             {% comment %} Single card below start {% endcomment %}
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                               <div class="card" style="width: 18rem">
                                 <img src="" class="card-img-top" alt="..." />
                                 <div class="card-body">
@@ -156,7 +155,20 @@
                                   <p class="card-text">
                                     {{eve.e_description|truncatewords:20}}
                                   </p>
-                                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                                    {% if user.is_authenticated %}
+                                        <a
+                                          href="{% url 'event_detail' eve.pk %}"
+                                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                                          class="btn btn-primary"
+                                          >View more</a
+                                        >
+                                     {% else %}
+                                        <a
+                                          href="{% url 'event_detail' eve.pk %}"
+                                          class="btn btn-primary"
+                                          >View more</a
+                                        >
+                                    {% endif %}
                                 </div>
                               </div>
                             </div>
@@ -172,7 +184,7 @@
 
                                 {% for eve in listy%}
                                     {% comment %} Single card below start {% endcomment %}
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                       <div class="card" style="width: 18rem">
                                         <img src="" class="card-img-top" alt="..." />
                                         <div class="card-body">
@@ -237,22 +249,55 @@
               </div>
             {% endif %}
 
+            <br>
 
-            {% if user_browse_recommendations_active %}
-              <h3>Based on your past Search</h3>
-              <div
-                id="carouselExampleIndicators2"
-                class="carousel slide"
-                data-bs-ride="carousel"
+            {% comment %} new code  below {% endcomment %}
+
+          {% if user_browse_recommendations_active %}
+            <h2 class="h2">Based on your Past Search history</h2>
+             <div
+                class="tab-pane fade show active"
+                id="pills-home"
+                role="tabpanel"
+                aria-labelledby="pills-home-tab"
               >
-                <div class="carousel-inner">
+                <div class="wrapper">
+                  <div
+                    id="carouselExampleIndicators2"
+                    class="carousel slide"
+                    data-bs-ride="carousel"
+                  >
+                    <div class="carousel-indicators">
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators2"
+                        data-bs-slide-to="0"
+                        class="active"
+                        aria-current="true"
+                        aria-label="Slide 1"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators2"
+                        data-bs-slide-to="1"
+                        aria-label="Slide 2"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators2"
+                        data-bs-slide-to="2"
+                        aria-label="Slide 3"
+                      ></button>
+                    </div>
 
-                  <div class="carousel-item active">
-                    <div class="row">
-                    
-                    {% for eve in user_browse_recommendations_active %}
+
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <div class="row row-cols-0 row-cols-md-4 g-4">
+
+                        {% for eve in user_browse_recommendations_active %}
                             {% comment %} Single card below start {% endcomment %}
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                               <div class="card" style="width: 18rem">
                                 <img src="" class="card-img-top" alt="..." />
                                 <div class="card-body">
@@ -262,91 +307,513 @@
                                   <p class="card-text">
                                     {{eve.e_description|truncatewords:20}}
                                   </p>
-                                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                                    {% if user.is_authenticated %}
+                                        <a
+                                          href="{% url 'event_detail' eve.pk %}"
+                                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                                          class="btn btn-primary"
+                                          >View more</a
+                                        >
+                                     {% else %}
+                                        <a
+                                          href="{% url 'event_detail' eve.pk %}"
+                                          class="btn btn-primary"
+                                          >View more</a
+                                        >
+                                    {% endif %}
                                 </div>
                               </div>
                             </div>
+                          {% endfor %}
+                        </div>
+                      </div>
 
-                    {% endfor %}
-                      {% comment %} Single card below end {% endcomment %}
+
+                    {% if user_browse_recommendations %}
+                        {% for listy in user_browse_recommendations %}
+                            <div class="carousel-item">
+                              <div class="row">
+
+                                {% for eve in listy%}
+                                    {% comment %} Single card below start {% endcomment %}
+                                    <div class="col-sm-3">
+                                      <div class="card" style="width: 18rem">
+                                        <img src="" class="card-img-top" alt="..." />
+                                        <div class="card-body">
+                                          <h5 class="card-title">
+                                            {{eve.e_name}}
+                                          </h5>
+                                          <p class="card-text">
+                                            {{eve.e_description|truncatewords:20}}
+                                          </p>
+                                          {% if user.is_authenticated %}
+                                              <a
+                                                href="{% url 'event_detail' eve.pk %}"
+                                                onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                                                class="btn btn-primary"
+                                                >View more</a
+                                              >
+                                          {% else %}
+                                              <a
+                                                href="{% url 'event_detail' eve.pk %}"
+                                                class="btn btn-primary"
+                                                >View more</a
+                                              >
+                                          {% endif %}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {% comment %} Single card below end {% endcomment %}
+                                {% endfor %}
+                                
+                              </div>
+                            </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                    
+                    <button
+                      class="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#carouselExampleIndicators2"
+                      data-bs-slide="prev"
+                    >
+                      <span
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      class="carousel-control-next"
+                      type="button"
+                      data-bs-target="#carouselExampleIndicators2"
+                      data-bs-slide="next"
+                    >
+                      <span
+                        class="carousel-control-next-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            {% comment %} new code above {% endcomment %}
+
+            <br>
+
+
+
+          <div class="container-fluid">
+
+            {% if Gaming %}
+              <h2>Trending events in Gaming</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Gaming%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
-                
-                  {% if user_browse_recommendations %}
-                    {% for listy in user_browse_recommendations %}
-                        <div class="carousel-item">
-                          <div class="row">
-
-                            {% for eve in listy%}
-                                {% comment %} Single card below start {% endcomment %}
-                                <div class="col-sm-4">
-                                  <div class="card" style="width: 18rem">
-                                    <img src="" class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                      <h5 class="card-title">
-                                        {{eve.e_name}}
-                                      </h5>
-                                      <p class="card-text">
-                                        {{eve.e_description|truncatewords:20}}
-                                      </p>
-                                      {% if user.is_authenticated %}
-                                          <a
-                                            href="{% url 'event_detail' eve.pk %}"
-                                            onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
-                                            class="btn btn-primary"
-                                            >View more</a
-                                          >
-                                      {% else %}
-                                          <a
-                                            href="{% url 'event_detail' eve.pk %}"
-                                            class="btn btn-primary"
-                                            >View more</a
-                                          >
-                                      {% endif %}
-                                    </div>
-                                  </div>
-                                </div>
-                                {% comment %} Single card below end {% endcomment %}
-                            {% endfor %}
-                            
-                          </div>
-                        </div>
-                    {% endfor %}
-                  {% endif %}
+                  {% endfor %}
                 </div>
-              
-                <button
-                  class="carousel-control-prev"
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators2"
-                  data-bs-slide="prev"
-                >
-                  <span
-                    class="carousel-control-prev-icon"
-                    aria-hidden="false"
-                  ></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button
-                  class="carousel-control-next"
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators2"
-                  data-bs-slide="next"
-                >
-                  <span
-                    class="carousel-control-next-icon"
-                    aria-hidden="false"
-                  ></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
-              </div>
-              <br><br>
+              <hr>
+            {% endif %}
+
+            {% if Sports%}
+              <h2>Trending events in Sports</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Sports%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if Dance %}
+              <h2>Trending events in Dance</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Dance%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if Travel_and_Tourism %}
+              <h2>Trending events in Travel and Tourism</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Travel_and_Tourism%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if Live_Shows %}
+              <h2>Trending events in Live Shows</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Live_Shows%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if Auto_and_Automotives %}
+              <h2>Trending events in Auto and Automotives</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Auto_and_Automotives%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if IT_and_Technology %}
+              <h2>Trending events in IT and Technology</h2>
+              <hr>
+                <div class="row">
+                  {% for event in IT_and_Technology%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if Food_and_Beverages %}
+              <h2>Trending events in Food And Bevrages</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Food_and_Beverages%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
+            {% endif %}
+
+            {% if Wellness_Health_and_Fitness %}
+              <h2>Trending events in Wellness, Health and fitness</h2>
+              <hr>
+                <div class="row">
+                  {% for event in Wellness_Health_and_Fitness%}
+                  <div class="col-sm-4">
+                    <div class="card" style="width: 18rem">
+                      <img
+                        src="https://c0.wallpaperflare.com/preview/550/130/527/peoplesport-fight-fighting-fit.jpg"
+                        height="150px"
+                        wdith="200px"
+                        object-fit:cover;
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          {{ event.pk }} {{event.e_name}}
+                        </h5>
+                        <p class="card-text">
+                          {{event.e_description|truncatewords:20}}
+                        </p>
+
+                        {% if user.is_authenticated %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          onclick="sendEvidenceToCollector({{user.id}},{{event.pk}},4)"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% else %}
+                        <a
+                          href="{% url 'event_detail' event.pk %}"
+                          class="btn btn-primary"
+                          >View more</a
+                        >
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <hr>
             {% endif %}
 
 
-
-            <div class="container-fluid">
-              
               <div class="row">
                 {% for event in events%}
                 <div class="col-sm-4">
@@ -442,7 +909,7 @@
 
       {% comment %} below is used by the extension to monitor which user is
       logged in and which user is not {% endcomment %} 
-      {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
       <input
         type="hidden"
         id="user_id_hidden_field"
@@ -461,7 +928,12 @@
       {% endif %}
     </div>
 
+    {% if user.is_authenticated %}
+      <script type="text/javascript">
+        startCalls({{user.id}});
+      </script>
+    {% endif %}
+
     {% comment %} <script src="js/script.js" type="text/javascript"></script> {% endcomment %}
-    
 
 {% endblock %}

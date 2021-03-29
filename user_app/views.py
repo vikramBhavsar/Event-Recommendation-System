@@ -42,7 +42,7 @@ def createUser(request):
             print("-------CUSTOM PRINT STATEMENT--------")
             print("Data has been inserted into the database")
 
-            return redirect('login_user',{})
+            return redirect('/user/login',{})
         
         else:
             print("form is invalid")
