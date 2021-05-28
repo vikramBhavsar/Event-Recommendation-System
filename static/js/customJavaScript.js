@@ -78,7 +78,7 @@ function addContentToPage(content){
 
         var eachNode = `<div class="col-sm-4">
                     <div class="card" style="width: 18rem">
-                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <img src="/static/${item.image_link}" class="card-img-top" alt="..." />
                     <div class="card-body">
                         <h5 class="card-title">${item.id} ${item.name}</h5>
                         <p class="card-text">${item.description.slice(0,20)}
@@ -134,6 +134,7 @@ function startCalls(userid){
         xhttp.open('POST','/recommender/history_recommendations/',true);
         // xhttp.setRequestHeader('X-CSRFToken',csrf_token);
         xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+        // alert(userid);
         xhttp.send(`user=${userid}`);
 
       }, 5000);

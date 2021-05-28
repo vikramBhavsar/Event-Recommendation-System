@@ -1,5 +1,6 @@
 {% extends "events/base_header_and_footer.html" %} 
 {% block content %} 
+{% load static %}
 
     <div class="row">
       <nav
@@ -138,7 +139,7 @@
                             {% comment %} Single card below start {% endcomment %}
                             <div class="col-sm-3">
                               <div class="card" style="width: 18rem">
-                                <img src="{{eve.e_category.first.image_link }}" class="card-img-top" alt="..." />
+                                <img src="{% static eve.e_image_link %}" class="card-img-top" alt="..." />
                                 <div class="card-body">
                                   <h5 class="card-title">
                                     {{eve.e_name}}
@@ -177,7 +178,7 @@
                                     {% comment %} Single card below start {% endcomment %}
                                     <div class="col-sm-3">
                                       <div class="card" style="width: 18rem">
-                                        <img src="{{eve.e_category.first.image_link }}" class="card-img-top" alt="..." />
+                                        <img src="{% static eve.e_image_link %}" class="card-img-top" alt="..." />
                                         <div class="card-body">
                                           <h5 class="card-title">
                                             {{eve.e_name}}
@@ -290,7 +291,7 @@
                             {% comment %} Single card below start {% endcomment %}
                             <div class="col-sm-3">
                               <div class="card" style="width: 18rem">
-                                <img src="{{eve.e_category.first.image_link }}" class="card-img-top" alt="..." />
+                                <img src="{% static eve.e_image_link %}" class="card-img-top" alt="..." />
                                 <div class="card-body">
                                   <h5 class="card-title">
                                     {{eve.e_name}}
@@ -329,7 +330,7 @@
                                     {% comment %} Single card below start {% endcomment %}
                                     <div class="col-sm-3">
                                       <div class="card" style="width: 18rem">
-                                        <img src="{{eve.e_category.first.image_link }}" class="card-img-top" alt="..." />
+                                        <img src="{% static eve.e_image_link %}" class="card-img-top" alt="..." />
                                         <div class="card-body">
                                           <h5 class="card-title">
                                             {{eve.e_name}}
@@ -407,7 +408,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -452,7 +453,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -497,7 +498,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -542,7 +543,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -587,7 +588,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -632,7 +633,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -677,7 +678,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -722,7 +723,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -767,7 +768,7 @@
                   <div class="col-sm-4">
                     <div class="card" style="width: 18rem">
                       <img
-                        src="{{event.e_category.first.image_link }}"
+                        src="{% static event.e_image_link %}"
                         height="150px"
                         wdith="200px"
                         object-fit:cover;
@@ -810,7 +811,7 @@
                 <div class="col-sm-4">
                   <div class="card" style="width: 18rem">
                     <img
-                      src="{{event.e_category.first.image_link }}"
+                      src="{% static event.e_image_link %}"
                       height="150px"
                       wdith="200px"
                       object-fit:cover;

@@ -126,6 +126,7 @@ def index(request):
         pass
         
     elif request.method == 'POST':
+        print("POST REQUEST RECEIVED FOR STORING DATA")
         
         # print("this is from inside of the recommender function")
         jsonHistory = json.loads(request.body)
@@ -190,7 +191,7 @@ def history_recommendations(request):
                     temp["user_id"] = request.POST["user"]
                     temp["id"] = cu_event.pk
                     temp["name"] = cu_event.e_name
-                    temp["category_image_link"] = cu_event.e_category.all()[0].image_link
+                    temp["image_link"] = cu_event.e_image_link
                     temp["description"] = cu_event.e_description
                     temp["guest"] = cu_event.e_guest
                     temp["location"] = cu_event.e_location
@@ -200,7 +201,7 @@ def history_recommendations(request):
             return JsonResponse(eve_to_suggest,safe=False)
 
         else:
-            return JsonResponse({"success":"failed"},safe=False,status=503)
+            return JsonResponse({"success":"failed miserably"},safe=False,status=503)
 
 
         # data = [{'name': 'Peter', 'email': 'peter@example.org'},

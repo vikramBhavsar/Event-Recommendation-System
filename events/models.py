@@ -16,6 +16,7 @@ class Events_model(models.Model):
     e_time = models.DateTimeField(blank=True,null=True)
     e_category = models.ManyToManyField(Event_category_model)
     e_regis_count = models.IntegerField(default=0)
+    e_image_link = models.CharField(max_length=100,blank=True,null=True)
 
     def increaseCount(self):
         self.e_regis_count += 1

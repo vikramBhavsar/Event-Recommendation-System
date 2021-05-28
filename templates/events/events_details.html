@@ -39,7 +39,7 @@
     <div class="container">
         <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-        <img src="{{ object.e_category.first.image_link }}" width="80%" alt="Responsive image">
+        <img src="{% static object.e_image_link %}" width="80%" alt="Responsive image">
         </div>
         <div class="col-sm-12 col-md-6 col-lg-6">
             <p>{{ object.e_description }}</p>

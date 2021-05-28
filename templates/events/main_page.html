@@ -313,7 +313,7 @@
                       {% comment %} Single card below start {% endcomment %}
                       <div class="col-sm-3">
                         <div class="card" style="width: 18rem">
-                          <img src="{{ eve.e_category.first.image_link }}" class="card-img-top" alt="..." />
+                          <img src="{% static eve.e_image_link %}" class="card-img-top" alt="..." />
                           <div class="card-body">
                             <h5 class="card-title">
                               {{eve.e_name}}
@@ -352,7 +352,7 @@
                               {% comment %} Single card below start {% endcomment %}
                               <div class="col-sm-3">
                                 <div class="card" style="width: 18rem">
-                                  <img src="" class="card-img-top" alt="..." />
+                                  <img src="{% static eve.e_image_link %}" class="card-img-top" alt="..." />
                                   <div class="card-body">
                                     <h5 class="card-title">
                                       {{eve.e_name}}
