@@ -9,5 +9,6 @@ urlpatterns = [
     path('',EventsListView.as_view(),name='event_list'),
     path('<int:category_pk>',EventsListView.as_view(),name='event_list'),
     path('<slug:search_q>',EventsListView.as_view(),name='event_list'),
-    path('<slug:pk>/',EventDetailView.as_view(),name='event_detail')
+    path('<slug:pk>/',EventDetailView.as_view(),name='event_detail'),
+    path('<slug:location>',EventsListView.as_view(),name='event_list')
 ]

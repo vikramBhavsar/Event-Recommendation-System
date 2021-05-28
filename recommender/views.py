@@ -190,6 +190,7 @@ def history_recommendations(request):
                     temp["user_id"] = request.POST["user"]
                     temp["id"] = cu_event.pk
                     temp["name"] = cu_event.e_name
+                    temp["category_image_link"] = cu_event.e_category.all()[0].image_link
                     temp["description"] = cu_event.e_description
                     temp["guest"] = cu_event.e_guest
                     temp["location"] = cu_event.e_location

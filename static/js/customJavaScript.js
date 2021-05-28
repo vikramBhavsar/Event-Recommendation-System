@@ -39,14 +39,13 @@ function sendEvidenceToCollector(userid,eventid,evidenceType){
     var csrf_token = getCookie('csrftoken');
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function(){
-        
+
     }
 
     xhttp.open('POST','/collector/put_evidence/',true);
     xhttp.setRequestHeader('X-CSRFToken',csrf_token);
     xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
     xhttp.send(`user=${userid}&eventid=${eventid}&evidenceType=${evidenceType}`);
-
 }
 
 function testRecommendation(){
@@ -143,3 +142,24 @@ function startCalls(userid){
 function stopCalls(){
     clearInterval(myTimer);
 }
+
+
+function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition,error);
+    }else{
+        alert("location not available");
+    }
+  }
+  
+function showPosition(position) {
+    var hidden_location_field = document.getElementById("user_location");
+    hidden_location_field.value = `${position.coords.latitude}--${position.coords.longitude}`;
+    // alert("Location has been retreived",position.coords.latitude);
+}
+
+function error(err) {
+    alert(`ERROR(${err.code}): ${err.message}`);
+}
+
+  

@@ -3,6 +3,7 @@ from .models import Events_model, Event_keywords_model,Event_category_model
 from django.contrib.auth.models import User
 from django.db.models import Q
 
+
 from recommender.models import SimilarEvents
 from collector.models import Event_User_log
 from user_app.models import UserSearch
@@ -11,29 +12,18 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from datetime import datetime
 
-# Create your views here.
-def index(request):
+# adding location imports
+import pandas as pd
+import geopandas as gpd
+import geopy
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
+# import matplotlib.pyplot as plt
+import folium
+from folium.plugins import FastMarkerCluster
 
-    data_obj = Event_category_model.objects.all()
 
-    count = 0
-
-    courousel_list = []
-    obj_list = []
-
-    for obj in data_obj:
-        obj_list.append(obj)
-        count += 1
-
-        if count == 3:
-            # print(obj_list)
-            count = 0
-            courousel_list.append(obj_list)
-            obj_list = []
-        
-    # print(courousel_list)
-
-    return render(request,"events/temp.html",{"data_obj":courousel_list})
 
 def get_courousel_list_for_objects(data_obj):
     proper_count = 0
@@ -65,7 +55,47 @@ def get_courousel_list_for_objects(data_obj):
     return courousel_list_active,courousel_list
 
 def getHomePage(request):
-    return render(request,"events/main_page.html",{})
+
+    trendingEvents = Events_model.objects.order_by("-e_regis_count")
+    categories = Event_category_model.objects.all()
+    context = {'categories':Event_category_model.objects.all()}
+
+    # getting events coural ready
+    trending_active_eves,trending_eves = get_courousel_list_for_objects(trendingEvents)
+    context["trending_active_eves"] = trending_active_eves
+    context["trending_eves"] = trending_eves
+
+
+    return render(request,"events/main_page.html",context)
+
+# Create your views here.
+def index(request):
+
+    trending_events = Events_model.objects.get().order_by("-e_regis_count")
+
+    
+
+
+    data_obj = Event_category_model.objects.all()
+
+    count = 0
+
+    courousel_list = []
+    obj_list = []
+
+    for obj in data_obj:
+        obj_list.append(obj)
+        count += 1
+
+        if count == 3:
+            # print(obj_list)
+            count = 0
+            courousel_list.append(obj_list)
+            obj_list = []
+        
+    # print(courousel_list)
+
+    return render(request,"events/temp.html",{"data_obj":courousel_list})
 
 class EventsListView(ListView):
 
@@ -75,6 +105,7 @@ class EventsListView(ListView):
     context_object_name = "events"
 
     def get(self, request, *args, **kwargs):
+
         print(kwargs)
         return super().get(request, *args, **kwargs)
 
@@ -90,7 +121,6 @@ class EventsListView(ListView):
             if 'search_q' in self.request.GET:
                 search_term = self.request.GET["search_q"]
                 
-                
                 print("Here is the search term: %s" % search_term)
 
                 if self.request.user.is_authenticated:
@@ -98,11 +128,9 @@ class EventsListView(ListView):
                     new_search = UserSearch(user=cu_user,search_term=search_term,time_details=datetime.now())
                     new_search.save()
 
-
                 return Events_model.objects.filter(Q(e_name__contains=search_term)| Q(e_description__contains=search_term))
                 
             else:
-
                 print("Normal search is taking place.")
                 return super().get_queryset()
 
@@ -110,14 +138,15 @@ class EventsListView(ListView):
 
         # does not differentiate between passing the keywords and not passing the keywords
         # i.e website/events/  and  website/events/2
-
+        
+    
         context = super().get_context_data(**kwargs)
         context["categories"] = Event_category_model.objects.all()
 
         print("----CUSTOM CODE----")
         print("%s" % kwargs)
         # not giving trending events if not required:
-        if 'category_pk' not in self.kwargs:
+        if 'category_pk' not in self.kwargs and 'search_q' not in self.request.GET:
             for cat in Event_category_model.objects.all():
                 context[str(cat.e_category).replace(" ","_").replace("&","and").replace(",","")] = Events_model.objects.filter(e_category=cat).order_by("-e_regis_count")
             
@@ -129,9 +158,41 @@ class EventsListView(ListView):
 
                 # print("user is authenticated")
                 # following is a list (getting rec based on event clicks)
-                user_clicks_recommends = get_recs_based_on_click_events(self.request.user)
-                user_clicks_recommends = Events_model.objects.filter(pk__in=user_clicks_recommends)
+                user_clicks_recommends_temp = get_recs_based_on_click_events(self.request.user)
+                user_clicks_recommends = []
+                if 'user_location' in self.request.GET:
 
+                    # getting user's location
+                    user_location_in_list = self.request.GET["user_location"].split('--')
+                    user_loc = (user_location_in_list[0],user_location_in_list[1])
+                    # tuple of user's location
+
+                    for eve_id in user_clicks_recommends_temp:
+                        eve = Events_model.objects.get(pk=eve_id)
+
+                        if eve.e_location != 'online':
+                                loc = eve.e_location
+                                locator = Nominatim(user_agent="myGeocoder")
+                                location = locator.geocode(loc)
+                                event_loc = (location.latitude,location.longitude)
+
+                                if geodesic(event_loc, user_loc).km > 50:
+                                    print("Distance is: %s" % geodesic(event_loc, user_loc).km)
+                                    print("Distance between the event and user is more than 50km")
+                                    print("hence not adding the event to recommendation")
+                                    continue
+                                
+                        user_clicks_recommends.append(eve_id)
+
+
+                else:
+                    user_clicks_recommends = user_clicks_recommends_temp
+
+                # print("here are the click events %s" % user_clicks_recommends)
+
+
+                user_clicks_recommends = Events_model.objects.filter(pk__in=user_clicks_recommends)
+                
                 
                 # getting results based on past search history
                 cu_user = User.objects.get(pk=self.request.user.id)
@@ -150,7 +211,30 @@ class EventsListView(ListView):
 
                     search_events = Events_model.objects.filter(Q(e_name__contains=user_search.search_term)| Q(e_description__contains=user_search.search_term))
 
-                    for srch_event in search_events:
+                    for srch_event in search_events:    
+
+                        print("------------------------------------")
+                        print("%s" % self.request.GET)
+
+                        if 'user_location' in self.request.GET:
+                            # print("User's Location is: %s" % self.request.GET["user_location"])
+
+                            user_location_in_list = self.request.GET["user_location"].split('--')
+                            user_loc = (user_location_in_list[0],user_location_in_list[1])
+
+                            print("%s is the user's location\n%s is the cordinateds\n\n" % (srch_event.e_location,user_loc))
+                            if srch_event.e_location != 'online':
+                                loc = srch_event.e_location
+                                locator = Nominatim(user_agent="myGeocoder")
+                                location = locator.geocode(loc)
+                                event_loc = (location.latitude,location.longitude)
+
+                                if geodesic(event_loc, user_loc).km > 50:
+                                    print("Distance is: %s" % geodesic(event_loc, user_loc).km)
+                                    print("Distance between the event and user is more than 50km")
+                                    print("hence not adding the event to recommendation")
+                                    continue
+                                
                         user_browse_recommendation_list.append(srch_event)
 
                 # adding the data recieved to the conttext

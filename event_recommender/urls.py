@@ -23,6 +23,7 @@ urlpatterns = [
     path('user/',include('user_app.urls')),
     path('collector/',include('collector.urls')),
     path('recommender/',include('recommender.urls')),
+    path('organizer/',include('organizer.urls')),
     path('admin/', admin.site.urls),
     path('',getHomePage,name="home_page"),
 ]

@@ -73,13 +73,15 @@ function addContentToPage(content){
 
     content.forEach(function(item,index){
 
-        console.log("from inside add content page:");
-        console.log("Type of decription is");
-        console.log(typeof item.description);
+        // console.log("from inside add content page:");
+        // console.log("Type of decription is");
+        // console.log(typeof item.description);
+        console.log(item.category_image_link);
+        alert(item.category_image_link);
 
         var eachNode = `<div class="col-sm-4">
                     <div class="card" style="width: 18rem">
-                    <img src="download.jpg" class="card-img-top" alt="..." />
+                    <img src="${item.category_image_link}" class="card-img-top" alt="..." />
                     <div class="card-body">
                         <h5 class="card-title">${item.id} ${item.name}</h5>
                         <p class="card-text">${item.description.slice(0,20)}

@@ -2,6 +2,7 @@ from django.db import models
 
 class Event_category_model(models.Model):
     e_category = models.CharField(max_length=60)
+    image_link = models.CharField(max_length=200,null=True,blank=True)
 
     def __str__(self):
         return str(self.id) + " " + self.e_category
