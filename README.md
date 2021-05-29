@@ -65,7 +65,7 @@ The github repository contains pre-calculated similarity of events, keywords etc
 - `python add_keywords_to_events.py`
 - `python add_similarity_to_events.py`
 
-Once everything is setup, user can run the project using following command: `Python manage.py runserver <port-number>` Here port-number is optional 
+Once everything is setup, user can run the project using following command: `Python manage.py runserver <port-number>` Here port-number is optional but it is preffered to keep the defaut port which is 8000. Since the history extractor extension uses the port 8000. If any port changes has to be done then the same would have to be reflected in the extension as well. 
 
 For personalized Recommendation we need to install **History Extractor Extension** on google chrome browser. Chromium browser does not work with handling location. To install the google chrome extension follow the below steps:
 
