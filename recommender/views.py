@@ -173,35 +173,38 @@ def history_recommendations(request):
         # print("%s" % request.POST["user"])
 
         cu_user = User.objects.get(id=request.POST["user"])
+        
+        try:
+            recs = HistoryRecommendedEvents.objects.get(user=cu_user)
 
-        recs = HistoryRecommendedEvents.objects.get(user=cu_user)
+            if recs.latest_update == date.today():
+                
+                eve_to_suggest = []
+                events = recs.rec_events.split(' ')
 
-        if recs.latest_update == date.today():
-            
-            eve_to_suggest = []
-            events = recs.rec_events.split(' ')
+                for eve in events:
 
-            for eve in events:
+                    if eve.isnumeric():
 
-                if eve.isnumeric():
+                        cu_event = Events_model.objects.get(id=eve)
 
-                    cu_event = Events_model.objects.get(id=eve)
+                        temp = {}
+                        temp["user_id"] = request.POST["user"]
+                        temp["id"] = cu_event.pk
+                        temp["name"] = cu_event.e_name
+                        temp["image_link"] = cu_event.e_image_link
+                        temp["description"] = cu_event.e_description
+                        temp["guest"] = cu_event.e_guest
+                        temp["location"] = cu_event.e_location
+                        temp["date"] = cu_event.e_time
+                        eve_to_suggest.append(temp)
 
-                    temp = {}
-                    temp["user_id"] = request.POST["user"]
-                    temp["id"] = cu_event.pk
-                    temp["name"] = cu_event.e_name
-                    temp["image_link"] = cu_event.e_image_link
-                    temp["description"] = cu_event.e_description
-                    temp["guest"] = cu_event.e_guest
-                    temp["location"] = cu_event.e_location
-                    temp["date"] = cu_event.e_time
-                    eve_to_suggest.append(temp)
-
-            return JsonResponse(eve_to_suggest,safe=False)
-
-        else:
+                return JsonResponse(eve_to_suggest,safe=False)
+            else:
+                return JsonResponse({"success":"failed miserably"},safe=False,status=503)
+        except Exception:
             return JsonResponse({"success":"failed miserably"},safe=False,status=503)
+
 
 
         # data = [{'name': 'Peter', 'email': 'peter@example.org'},

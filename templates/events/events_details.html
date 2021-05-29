@@ -110,7 +110,7 @@
                     {% for sim_evn in similar_events%}
                         <div class="col-sm-4">
                             <div class="card" style="width: 18rem;">
-                                    <img src="{{ sim_evn.e_category.first.image_link }}" class="card-img-top" alt="...">
+                                    <img src="{% static sim_evn.e_image_link %}" class="card-img-top" alt="...">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ sim_evn.pk }} {{sim_evn.e_name}}</h5>
                                         <p class="card-text">{{sim_evn.e_description|truncatewords:20}}</p>
