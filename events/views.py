@@ -206,10 +206,29 @@ class EventsListView(ListView):
                     search_count += 1
                     
                     # taking only last two search count to show.
-                    if search_count >= 3:
+                    if search_count >= 4:
                         break
 
                     search_events = Events_model.objects.filter(Q(e_name__contains=user_search.search_term)| Q(e_description__contains=user_search.search_term))
+
+                    # removing already registered event from the search
+                    non_registered_event = []
+                    for srch_event in search_events:
+                        event_id = srch_event.id
+                        search_event = Events_model.objects.get(pk=event_id)
+                        
+                        if Event_User_log.objects.filter(user=cu_user,event=search_event).exists():
+                            eve_user_log = Event_User_log.objects.get(user=cu_user,event=search_event)
+                            if eve_user_log.viewRegistration > 0:
+                                pass
+                            else:
+                                non_registered_event.append(event_id)
+                        else:
+                            non_registered_event.append(event_id)
+
+                    # putting back results into the same object.
+                    search_events = Events_model.objects.filter(pk__in=non_registered_event)
+                    
 
                     for srch_event in search_events:    
 
