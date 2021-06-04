@@ -39,7 +39,7 @@ class HistoryRecommendation():
 
                 # preprocessing on single words.
                 for word in words:
-                    if word not in stop_words and not word.isnumeric() and word not in ['facebook','google','youtube','instagram','twitter','gmail','drive',]:
+                    if word not in stop_words and not word.isnumeric() and word not in ['facebook','google','youtube','instagram','twitter','gmail','drive','amigos','ers','ppt','slides','event','registration','form']:
                         
                         if word not in word_count.keys():
                             word_count[word] = [1,[record[2]],record[2]]
