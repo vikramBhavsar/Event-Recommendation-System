@@ -76,4 +76,3 @@ For personalized Recommendation we need to install **History Extractor Extension
 - Go to our **Event-Recommendation-System** folder and select the folder which is named **history_extractor_extension** The browser extension will successfully install itself.
 
 ## The project is now ready to run.
-
